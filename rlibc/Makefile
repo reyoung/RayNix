@@ -1,6 +1,7 @@
 CC=i586-elf-gcc
 CFLAGS=-Wall -nostdlib -fno-builtin -nostartfiles -nodefaultlibs -c
 LD=i586-elf-ld
+AR=i586-elf-ar
 LFLAGS=-T linker.ld
 ASM=nasm
 INC = inc
