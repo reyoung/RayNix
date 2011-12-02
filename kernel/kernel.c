@@ -1,3 +1,6 @@
+#include "atol.h"
+#include "multiboot.h"
+static char BUFFER[512];
 void ClearScreen(int n,char color){
 	int i;
 	unsigned char *videoram = (unsigned char *) 0xb8000;
@@ -8,7 +11,7 @@ void ClearScreen(int n,char color){
 }
 
 
-void kmain( void* mbd, unsigned int magic )
+void kmain( multiboot_info_t* mbd, unsigned int magic )
 {
    if ( magic != 0x2BADB002 )
    {
@@ -16,19 +19,15 @@ void kmain( void* mbd, unsigned int magic )
       /* message and halt, but do *not* rely on the multiboot */
       /* data structure. */
    }
- 
-   /* You could either use multiboot.h */
-   /* (http://www.gnu.org/software/grub/manual/multiboot/multiboot.html#multiboot_002eh) */
-   /* or do your offsets yourself. The following is merely an example. */ 
-   //char * boot_loader_name =(char*) ((long*)mbd)[16];
- 
-   /* Print a letter to screen to see everything is working: */
    unsigned char *videoram = (unsigned char *) 0xb8000;
    ClearScreen(80*25,0x1E);
-   videoram[0] = 'H'; /* character 'A' */
-   videoram[2] = 'E'; /* character 'A' */
-   videoram[4] = 'L'; /* character 'A' */
-   videoram[6] = 'L'; /* character 'A' */
+   itoa(mbd->mmap_length,BUFFER,10);
+   
+   
+   videoram[0] = BUFFER[0]; /* character 'A' */
+   videoram[2] = BUFFER[1]; /* character 'A' */
+   videoram[4] = BUFFER[2]; /* character 'A' */
+   videoram[6] = BUFFER[3]; /* character 'A' */
    videoram[8] = 'O'; /* character 'A' */
    videoram[10] = '!'; /* character 'A' */
 }

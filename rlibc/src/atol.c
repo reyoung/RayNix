@@ -27,3 +27,20 @@ long atol(const char* str){
 	}
 	return retv;
 }
+void itoa(int value,char* buffer,int radix){
+	//! TODO Radix Used.
+	int count=0;
+	char temp[11];
+	if(value<0){
+		*buffer++ = '-';
+		value = -value;
+	}
+	do {
+		temp[count++]=value%10;
+		value/=10;
+	} while(value);
+	for(--count;count>=0;--count){
+		*buffer++=temp[count]+'0';
+	}
+	*buffer=0;
+}
