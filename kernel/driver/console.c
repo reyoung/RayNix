@@ -1,4 +1,5 @@
 #include "console.h"
+#include "string.h"
 #include "io.h"
 #define LINE_COUNT 25
 #define COLUMN_COUNT 80
@@ -9,21 +10,8 @@ static char Color;
 
 
 boolean Console_Init(){
-	int i=0;
-	X=0;
-	Y=0;
 	Color=0x07;
-	if(Console_IsVideoMono()){
-		for(i=0;i<LINE_COUNT* COLUMN_COUNT;++i){
-			VideoRam[i]=' ';
-		}
-	} else {
-		for(i=0;i<LINE_COUNT* COLUMN_COUNT;++i){
-			VideoRam[i*2]=' ';
-			VideoRam[i*2+1] = Color;
-		}
-	}
-	Console_GotoXY(X,Y);
+	Console_Clear();
 	return True;
 }
 boolean Console_GotoXY(int x, int y){
@@ -42,23 +30,82 @@ boolean Console_IsVideoMono(){
 }
 boolean Console_PutCharWithColor(char ch, char color){
 	volatile uint16_t* where;
-	// TODO Check Special Chars.
-
-	if(Console_IsVideoMono()) {
-		VideoRam[Y*80+X]=ch;
-	} else {
-		where=(uint16_t*)(VideoRam)+(Y*80+X);
-		*where=ch| (((uint16_t)color)<<8);
-	}
-	++X;
-	if(X >= COLUMN_COUNT){
-		X=0;
+	if(ch=='\n'){
 		++Y;
-		if(Y>=LINE_COUNT) {
-			// TODO Scroll Page.
+		if(Y>=LINE_COUNT){
+			Console_ScorllPage();
+		}
+	} else if(ch=='\r'){
+		X=0;
+	} else if(ch=='\t'){
+	       Console_PutCharWithColor(' ',color);
+	       Console_PutCharWithColor(' ',color);
+	       Console_PutCharWithColor(' ',color);
+	       Console_PutCharWithColor(' ',color);
+	} else {
+		if(Console_IsVideoMono()) {
+			VideoRam[Y*80+X]=ch;
+		} else {
+			where=(uint16_t*)(VideoRam)+(Y*80+X);
+			*where=ch| (((uint16_t)color)<<8);
+		}
+		++X;
+		if(X >= COLUMN_COUNT){
+			X=0;
+			++Y;
+			if(Y>=LINE_COUNT) {
+				Console_ScorllPage();
+			}
 		}
 	}
 	Console_GotoXY(X,Y);
 	return True;
+}
+boolean Console_SetDefaultColor(char color){
+	Color=color;
+	return True;
+}
+boolean Console_PutChar(char ch){
+	return Console_PutCharWithColor(ch,Color);
+}
+
+boolean Console_PutString(const char* str){
+	boolean retv=True;
+	while(*str!=0){
+		if(!Console_PutChar(*str++))
+			retv=False;
+	}
+	return retv;
+}
+
+boolean Console_Clear(){
+	int i=0;
+	X=0;
+	Y=0;
+	if(Console_IsVideoMono()){
+		for(i=0;i<LINE_COUNT* COLUMN_COUNT;++i){
+			VideoRam[i]=' ';
+		}
+	} else {
+		for(i=0;i<LINE_COUNT* COLUMN_COUNT;++i){
+			VideoRam[i*2]=' ';
+			VideoRam[i*2+1] = Color;
+		}
+	}
+	Console_GotoXY(X,Y);
+}
+boolean Console_ScorllPage(){
+	int i=0;
+	uint16_t* where;
+	--Y;
+	if(Console_IsVideoMono()){
+		memmove(VideoRam,VideoRam+COLUMN_COUNT,LINE_COUNT* COLUMN_COUNT);
+	}else {
+		memmove(VideoRam,VideoRam+COLUMN_COUNT*2,LINE_COUNT * COLUMN_COUNT *2 );
+		for(i=0;i< COLUMN_COUNT; ++i){
+			where=(uint16_t*)(VideoRam)+((LINE_COUNT-1) *80+i);
+			*where=' '| (((uint16_t)Color)<<8);
+		}
+	}
 }
 

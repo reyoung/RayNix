@@ -11,5 +11,31 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
       /* data structure. */
    }
    Console_Init();
-   Console_PutCharWithColor('H',0xE7);
+   Console_SetDefaultColor(0x1E);
+   Console_Clear();
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
+   Console_PutString("===========================RayNix Kernel===================================\r\n\t");
 }
