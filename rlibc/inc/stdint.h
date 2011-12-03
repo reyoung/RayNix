@@ -3,6 +3,7 @@
 
 #ifndef STDINT_H_INCLUDED
 #define STDINT_H_INCLUDED
+#include "stddef.h"
 
 typedef signed char int8_t;
 typedef unsigned char uint8_t;

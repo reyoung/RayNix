@@ -12,7 +12,8 @@ all:
 	@cp kernel/kernel.a lib/kernel.a
 	$(LD) $(LFLAGS) -o kernel.bin  lib/kernel.a lib/$(RLIBC)
 run:all
-	qemu.exe -kernel kernel.bin
+	qemu.exe -vga std -kernel kernel.bin
+
 clean:
 	rm lib/*
 	$(MAKE) -C rlibc clean

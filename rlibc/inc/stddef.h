@@ -16,6 +16,8 @@
 typedef __PTRDIFF_TYPE__ ptrdiff_t;
 typedef __SIZE_TYPE__ size_t;
 typedef signed long int ssize_t;
+typedef enum tagBoolean{False=0,True=-1} boolean;
+
 
 #endif /* _CROCOS_KLIBC_STDDEF_H */
 
