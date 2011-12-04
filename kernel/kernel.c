@@ -13,5 +13,5 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    Console_Init();
    Console_SetDefaultColor(0x1E);
    Console_Clear();
-   Console_PutString("===============================RayNix Kernel====================================");
+   Console_Printf("Hello world!");
 }

@@ -9,9 +9,9 @@ boolean Console_PutCharWithColor(char ch,char color);
 boolean Console_SetDefaultColor(char color);
 boolean Console_PutChar(char ch);
 boolean Console_PutString(const char * str);
-boolean Console_Clear();
-boolean Console_ScorllPage();
-
+void    Console_Clear();
+void    Console_ScorllPage();
+int     Console_Printf(const char* fmt,...);
 
 
 

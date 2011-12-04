@@ -1,8 +1,11 @@
 #include "console.h"
 #include "string.h"
 #include "io.h"
+#include "sprintf.h"
 #define LINE_COUNT 25
 #define COLUMN_COUNT 80
+#define BUFFER_MAX 256
+
 static char * VideoRam = 0x000b8000;
 static uint8_t X;
 static uint8_t Y;
@@ -78,7 +81,7 @@ boolean Console_PutString(const char* str){
 	return retv;
 }
 
-boolean Console_Clear(){
+void Console_Clear(){
 	int i=0;
 	X=0;
 	Y=0;
@@ -94,7 +97,7 @@ boolean Console_Clear(){
 	}
 	Console_GotoXY(X,Y);
 }
-boolean Console_ScorllPage(){
+void Console_ScorllPage(){
 	int i=0;
 	uint16_t* where;
 	--Y;
@@ -107,5 +110,16 @@ boolean Console_ScorllPage(){
 			*where=' '| (((uint16_t)Color)<<8);
 		}
 	}
+}
+
+int Console_Printf(const char* fmt,...){
+	char buffer[BUFFER_MAX];
+	va_list args;
+	int res;
+	va_start(args,fmt);
+	res = vsprintf(buffer,fmt,args);
+	va_end(args);
+	Console_PutString(buffer);
+	return res;
 }
 
