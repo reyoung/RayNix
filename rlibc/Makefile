@@ -17,5 +17,5 @@ clean:
 	rm $(RLIBC_OBJS_FILES)
 %.o: %.c
 	@echo "Compiling $(DIR)/$< Using $(CC)"
-	@$(CC) $(CFLAGS) -I$(INC) -o $@ -c $<
+	$(CC) $(CFLAGS) -I$(INC) -o $@ -c $<
 	
