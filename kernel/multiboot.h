@@ -24,7 +24,7 @@
 
  
  /* How many bytes from the start of the file we search for the header. */
- #define MULTIBOOT_SEARCH8192
+ #define MULTIBOOT_SEARCH          8192
  
  /* The magic field should contain this. */
  #define MULTIBOOT_HEADER_MAGIC  0x1BADB002
@@ -39,18 +39,18 @@
  #define MULTIBOOT_MOD_ALIGN 0x00001000
  
  /* Alignment of the multiboot info structure. */
- #define MULTIBOOT_INFO_ALIGN0x00000004
+ #define MULTIBOOT_INFO_ALIGN    0x00000004
  
  /* Flags set in the 'flags' member of the multiboot header. */
  
  /* Align all boot modules on i386 page (4KB) boundaries. */
- #define MULTIBOOT_PAGE_ALIGN0x00000001
+ #define MULTIBOOT_PAGE_ALIGN    0x00000001
  
  /* Must pass memory information to OS. */
  #define MULTIBOOT_MEMORY_INFO   0x00000002
  
  /* Must pass video information to OS. */
- #define MULTIBOOT_VIDEO_MODE0x00000004
+ #define MULTIBOOT_VIDEO_MODE    0x00000004
  
  /* This flag indicates the use of the address fields in the header. */
  #define MULTIBOOT_AOUT_KLUDGE   0x00010000
@@ -69,7 +69,7 @@
  /* These next two are mutually exclusive */
  
  /* is there a symbol table loaded? */
- #define MULTIBOOT_INFO_AOUT_SYMS0x00000010
+ #define MULTIBOOT_INFO_AOUT_SYMS 0x00000010
  /* is there an ELF section header table? */
  #define MULTIBOOT_INFO_ELF_SHDR 0X00000020
  
@@ -86,7 +86,7 @@
  #define MULTIBOOT_INFO_BOOT_LOADER_NAME 0x00000200
  
  /* Is there a APM table? */
- #define MULTIBOOT_INFO_APM_TABLE0x00000400
+ #define MULTIBOOT_INFO_APM_TABLE 0x00000400
  
  /* Is there video information? */
  #define MULTIBOOT_INFO_VIDEO_INFO   0x00000800
@@ -203,8 +203,7 @@
  #define MULTIBOOT_MEMORY_RESERVED   2
    multiboot_uint32_t type;
  } __attribute__((packed));
- typedef struct multiboot_mmap_entry multiboot_memory_map_t;
- 
+ typedef struct multiboot_mmap_entry multiboot_memory_map_t;	
  struct multiboot_mod_list
  {
    /* the memory used goes from bytes 'mod_start' to 'mod_end-1' inclusive */
