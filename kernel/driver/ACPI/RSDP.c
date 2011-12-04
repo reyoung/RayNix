@@ -2,8 +2,8 @@
 #include "string.h"
 #define RSDP_MAGIC "RSD PTR "
 #define RSDP_MAGIC_LEN 8
-#define BIOS_MEM_BEGIN 0x000E0000
-#define BIOS_MEM_END   0x000FFFFF
+#define BIOS_MEM_BEGIN ((void*)(0x000E0000))
+#define BIOS_MEM_END   ((void*)(0x000FFFFF))
 
 
 int RSDP_GetVersion(){

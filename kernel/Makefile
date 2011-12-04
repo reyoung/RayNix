@@ -4,7 +4,7 @@ LD=i586-elf-ld
 LFLAGS=-T linker.ld
 AS=nasm
 AS_FLAG= -f elf
-BASIC_DIRVER_CC_FILE=$(wildcard driver/*.c)
+BASIC_DIRVER_CC_FILE=$(wildcard driver/*.c) $(wildcard driver/ACPI/*.c)
 
 OBJS=kernel.o loader.o $(patsubst %.c, %.o, $(BASIC_DIRVER_CC_FILE))
 AR=i586-elf-ar

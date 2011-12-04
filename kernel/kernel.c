@@ -2,7 +2,7 @@
 #include "multiboot.h"
 #include "driver/console.h"
 #include "sys/info.h"
-#include "driver/RSDP.h"
+#include "driver/ACPI/RSDP.h"
 void kmain( multiboot_info_t* mbd, unsigned int magic )
 {
    if ( magic != 0x2BADB002 )

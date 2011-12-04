@@ -1,5 +1,5 @@
-#ifndef KERNEL_DRIVER_RSDP_H_INCLUDED
-#define KERNEL_DRIVER_RSDP_H_INCLUDED
+#ifndef KERNEL_DRIVER_ACPI_RSDP_H_INCLUDED
+#define KERNEL_DRIVER_ACPI_RSDP_H_INCLUDED
 #include "stdint.h"
 // Reference http://wiki.osdev.org/RSDP
 typedef struct tagRSDP_Descriptor_V10 {
