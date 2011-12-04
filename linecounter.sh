@@ -14,6 +14,9 @@ handleFile(){
 		handleWithCorrectFile "$filename"
 	else if [ $ext = ld -o $ext = S ]; then
 		handleWithCorrectFile "$filename" 
+	else if [ $ext = Makefile -o $ext = sh ]; then 
+		handleWithCorrectFile "$filename"
+	fi
 	fi
 	fi
 }
