@@ -15,5 +15,9 @@ typedef struct tagACPI_RSDT_HEADER{
 
 ACPI_RSDT_Header* ACPI_RSDT_GetHeader();
 
+boolean ACPI_RSDT_IsValid();
+
+void* ACPI_RSDT_GetEntry(const char* sig);
+
 
 #endif

@@ -4,6 +4,7 @@
 #include "sys/info.h"
 #include "driver/ACPI/RSDP.h"
 #include "driver/ACPI/RSDT.h"
+#include "driver/ACPI/FADT.h"
 void kmain( multiboot_info_t* mbd, unsigned int magic )
 {
    if ( magic != 0x2BADB002 )
@@ -23,5 +24,7 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    RSDP_Descriptor_V10* desc = RSDP_GetDescriptor();
    Console_Printf("OEMID %s,Rsdt Address %d,Is Valid %d.\r\n",desc->OEMID,desc->RsdtAddress,RSDP_IsValid()?1:0);
    ACPI_RSDT_Header* header = ACPI_RSDT_GetHeader();
-   Console_Printf("System RSDT, Signature %s, OEMID %s,\r\n",header->Signature,header->OEMID);
+   Console_Printf("System RSDT, IsValid %d, Signature %s, OEMID %s,\r\n",ACPI_RSDT_IsValid(),header->Signature,header->OEMID);
+   ACPI_FADT* fadt = ACPI_FADT_GetInstance();
+   Console_Printf("System FADT IsValid %d, Len %u\r\n",ACPI_FADT_IsValid(),fadt->header.Length);
 }

@@ -33,6 +33,9 @@ void* RSDP_GetDescriptor(){
 
 boolean RSDP_IsValid(){
 	void* addr = RSDP_GetDescriptor();
+	if(addr==0){
+		return False;
+	}
 	char* v1 = addr;
 	RSDP_Descriptor_V10* desc1 = addr;
 	uint8_t c = 0;
