@@ -1,4 +1,9 @@
 RayNix -- A simple enough operating system for educational purpose. And currently it is a exercise of a undergraduate student. Mostly i will use C or Cpp to complete this OS.
+How to run it:
+	1. type make run in linux or cygwin
+		you must have i586 gcc and ld( you may build it from source), nasm, qemu.
+	2. copy the kernel.bin into a syslinux media, and change syslinux.cfg
+
 Complete Features:
 	1. multiboot header. make kernel can boot from grub or other multiboot bootloader.
 		I don't wanna to rewrite a bootloader by myself. I wanna do it as simple as possible.
@@ -20,6 +25,13 @@ Final Goal:
 
 
 RayNix -- 一个足够简单的操作系统。目前仅仅是一个本科生的练习，我准备绝大部分的代码使用C或者CPP来写，增加代码可读性，而且使事情变得简单。
+
+如何运行:
+	方法1：在cygwin或linux环境中，在目录输入make run命令。
+		必须存在i586版本的gcc，或许你需要自己从源代码编译这些。
+		必须存在nasm， qemu
+	方法2：将编译好的kernel.bin复制到一个有syslinux环境的介质中，并配置syslinux.cfg。
+		然后重启计算机，用这个介质引导系统(U盘，硬盘，光盘，软盘，随你意)
 
 目前完成的特性有：
 	1、多启动的头。可以兼容grub或者其他多启动的bootloader，例如syslinux
