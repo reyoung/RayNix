@@ -3,6 +3,7 @@
 #include "driver/console.h"
 #include "sys/info.h"
 #include "driver/ACPI/RSDP.h"
+#include "driver/ACPI/RSDT.h"
 void kmain( multiboot_info_t* mbd, unsigned int magic )
 {
    if ( magic != 0x2BADB002 )
@@ -21,4 +22,6 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    Console_Printf("System RSDP Version %d, ",RSDP_GetVersion());
    RSDP_Descriptor_V10* desc = RSDP_GetDescriptor();
    Console_Printf("OEMID %s,Rsdt Address %d,Is Valid %d.\r\n",desc->OEMID,desc->RsdtAddress,RSDP_IsValid()?1:0);
+   ACPI_RSDT_Header* header = ACPI_RSDT_GetHeader();
+   Console_Printf("System RSDT, Signature %s, OEMID %s,\r\n",header->Signature,header->OEMID);
 }
