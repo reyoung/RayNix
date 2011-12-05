@@ -1,0 +1,41 @@
+RayNix -- A simple enough operating system for educational purpose. And currently it is a exercise of a undergraduate student. Mostly i will use C or Cpp to complete this OS.
+Complete Features:
+	1. multiboot header. make kernel can boot from grub or other multiboot bootloader.
+		I don't wanna to rewrite a bootloader by myself. I wanna do it as simple as possible.
+	2. Part of libc
+		Currently the atol, ctype, sprintf, stdarg, stddef, stdint, string.h has been written.
+		Mostly reference to Crocos Project.
+	3. Console Driver
+		Complete a Console Driver, which in protected/text mode.
+	4. Part of APCI
+		Complete to RSDP struct.
+TODO Features:
+	1. Complete APCI
+		Make PC can shutdown. :)
+	2. Complete Libc
+		Complete the malloc, free, time, etc.
+	3. Complete Mem-Management and Process Management.
+Final Goal:
+	1. A simple enough muilttask OS. 
+
+
+RayNix -- 一个足够简单的操作系统。目前仅仅是一个本科生的练习，我准备绝大部分的代码使用C或者CPP来写，增加代码可读性，而且使事情变得简单。
+
+目前完成的特性有：
+	1、多启动的头。可以兼容grub或者其他多启动的bootloader，例如syslinux
+		我没有欲望从头写一个bootloader，因为那样可能会使得系统变得更加复杂，而仅仅是做了重新制造轮子的过程。
+	2、一部分的C语言标准库
+		目前完成了一部分的C语言标准库，参考/rlibc/inc中的部分
+		标准库中大部分的代码和想法参考自 Crocos项目(在sf.net上)
+	3、控制台的驱动
+		完成了保护模式下，字符模式的控制台驱动。
+	4、一部分的APCI
+		完成了RSDP结构体的封装，查找。
+将要做的工作：
+	1、完成APCI
+		让计算机可以关机重启
+	2、完成C语言标准库
+	3、完成内存管理，进程管理
+
+最终目的：
+	做一个简单的操作系统，证明简单的操作系统是能被任何人写出来的
