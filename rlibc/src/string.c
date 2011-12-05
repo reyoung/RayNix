@@ -55,3 +55,12 @@ void *memmove (void *dest, const void *src, size_t n){
 	}
 	return dest;
 }
+
+void * memset(void* s, int c, size_t n){
+	char* p = (char*) s;
+	size_t i=0;
+	for(i=0;i<n;++i){
+		p[i]=c;
+	}
+	return s;
+}

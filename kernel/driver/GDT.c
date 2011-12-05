@@ -1,5 +1,6 @@
 #include "GDT.h"
 #include "stdint.h"
+#include "console.h"
 struct GdtEntry{
 	uint16_t limit_low;
 	uint16_t base_low;

@@ -6,6 +6,7 @@
 #include "driver/ACPI/RSDT.h"
 #include "driver/ACPI/FADT.h"
 #include "driver/GDT.h"
+#include "driver/IDT.h"
 void kmain( multiboot_info_t* mbd, unsigned int magic )
 {
    if ( magic != 0x2BADB002 )
@@ -15,7 +16,9 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
       /* data structure. */
    }
    GDTInstall();
+   IDTInstall();
    Console_Init();
+
    Console_SetDefaultColor(0x1E);
    Console_Clear();
    Console_Printf("===============%s Ver %s.%s==============\r\n",OS_NAME,OS_MAJOR_VERSION,OS_MINOR_VERSION);
@@ -32,4 +35,6 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    if (!ACPI_IsEnabled()){
    	Console_Printf("Enabling ACPI.......%d\r\n",ACPI_Enable());
    }
+//   int i =0;
+//   i/=0;
 }
