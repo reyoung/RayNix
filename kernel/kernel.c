@@ -26,5 +26,8 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    ACPI_RSDT_Header* header = ACPI_RSDT_GetHeader();
    Console_Printf("System RSDT, IsValid %d, Signature %s, OEMID %s,\r\n",ACPI_RSDT_IsValid(),header->Signature,header->OEMID);
    ACPI_FADT* fadt = ACPI_FADT_GetInstance();
-   Console_Printf("System FADT IsValid %d, Len %u\r\n",ACPI_FADT_IsValid(),fadt->header.Length);
+   Console_Printf("System FADT IsValid %d, Len %u, PPMP %d\r\n",ACPI_FADT_IsValid(),fadt->header.Length,(int)fadt->PreferredPowerManagementProfile);
+   if (!ACPI_IsEnabled()){
+   	Console_Printf("Enabling ACPI.......%d\r\n",ACPI_Enable());
+   }
 }

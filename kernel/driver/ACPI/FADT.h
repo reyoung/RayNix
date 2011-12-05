@@ -2,6 +2,20 @@
 #define KERNEL_DRIVER_ACPI_FADT_H_INCLUDED
 
 #include "RSDT.h"
+
+
+//! PPMP stand for PreferredPowerManagementProfile
+#define ACPI_FADT_PPMP_UNSPECIFIED	0
+#define ACPI_FADT_PPMP_DESKTOP		1
+#define ACPI_FADT_PPMP_MOBILE		2
+#define ACPI_FADT_PPMP_WORKSTATION	3
+#define ACPI_FADT_PPMP_ENTERPRISE_SERVER	4
+#define ACPI_FADT_PPMP_SOHO_SERVER	5
+#define ACPI_FADT_PPMP_APLLIANCE_PC	6
+#define ACPI_FADT_PPMP_PERFORMACE_SERVER	7
+
+
+
 typedef struct tagACPI_GenericAddressStructure
 {
   uint8_t AddressSpace;
