@@ -8,14 +8,14 @@
 #include "driver/GDT.h"
 #include "driver/IDT.h"
 #include "driver/IRQ.h"
-
+#include "driver/CMOS.h"
 
 
 void TimerHandler(struct ISR_Regs* regs){
-	Console_Printf("Handlling Timer IRQ \r\n");
+	//Console_Printf("Handlling Timer IRQ \r\n");
 }
 
-
+char Buffer[256];
 
 void kmain( multiboot_info_t* mbd, unsigned int magic )
 {
@@ -33,7 +33,15 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    IRQ_InstallHandler(0,TimerHandler);
    Console_SetDefaultColor(0x1E);
    Console_Clear();
-   Console_Printf("===============%s Ver %s.%s==============\r\n",OS_NAME,OS_MAJOR_VERSION,OS_MINOR_VERSION);
+
+
+   Console_Printf("========================%s Ver %s.%s==============",OS_NAME,OS_MAJOR_VERSION,OS_MINOR_VERSION);
+
+   CMOS_DateTime dt;
+   CMOS_GetCurrentDateTime(&dt);
+
+   Console_Printf("%d-%d-%d %d:%d:%d\r\n",(int)dt.Month,(int)dt.Day,(int)dt.Year,(int)dt.Hour,(int)dt.Min,(int)dt.Second);
+
    if(mbd->flags&MULTIBOOT_INFO_MEMORY){
    	Console_Printf("Total Mem %dK, Uppder Mem %dk, Lower Mem %dk\r\n",mbd->mem_lower+mbd->mem_upper,mbd->mem_upper,mbd->mem_lower);
    }
