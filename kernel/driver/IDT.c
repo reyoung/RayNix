@@ -58,44 +58,50 @@ extern void ___isr24();
 extern void ___isr25();
 extern void ___isr26();
 extern void ___isr27();
-
+extern void ___isr28();
+extern void ___isr29();
+extern void ___isr30();
+extern void ___isr31();
 
 void IDTInstall(){
 	// because idts is static data, don't need to memset to zero.
 	//memset(idts,0,sizeof(struct IDTEntry)*256);
-#define IDE_SET_GATE(num)\
+#define IDT_SET_GATE(num)\
 	idt_set_gate(num,(uint32_t)___isr##num,0x08,0x8E)
 
-	IDE_SET_GATE(0);
-	IDE_SET_GATE(1);
-	IDE_SET_GATE(2);
-	IDE_SET_GATE(3);
-	IDE_SET_GATE(4);
-	IDE_SET_GATE(5);
-	IDE_SET_GATE(6);
-	IDE_SET_GATE(7);
-	IDE_SET_GATE(8);
-	IDE_SET_GATE(9);
-	IDE_SET_GATE(10);
-	IDE_SET_GATE(11);
-	IDE_SET_GATE(12);
-	IDE_SET_GATE(13);
-	IDE_SET_GATE(14);
-	IDE_SET_GATE(15);
-	IDE_SET_GATE(16);
-	IDE_SET_GATE(17);
-	IDE_SET_GATE(18);
-	IDE_SET_GATE(19);
-	IDE_SET_GATE(20);
-	IDE_SET_GATE(21);
-	IDE_SET_GATE(22);
-	IDE_SET_GATE(23);
-	IDE_SET_GATE(24);
-	IDE_SET_GATE(25);
-	IDE_SET_GATE(26);
-	IDE_SET_GATE(27);
-
-#undef IDE_SET_GATE
+	IDT_SET_GATE(0);
+	IDT_SET_GATE(1);
+	IDT_SET_GATE(2);
+	IDT_SET_GATE(3);
+	IDT_SET_GATE(4);
+	IDT_SET_GATE(5);
+	IDT_SET_GATE(6);
+	IDT_SET_GATE(7);
+	IDT_SET_GATE(8);
+	IDT_SET_GATE(9);
+	IDT_SET_GATE(10);
+	IDT_SET_GATE(11);
+	IDT_SET_GATE(12);
+	IDT_SET_GATE(13);
+	IDT_SET_GATE(14);
+	IDT_SET_GATE(15);
+	IDT_SET_GATE(16);
+	IDT_SET_GATE(17);
+	IDT_SET_GATE(18);
+	IDT_SET_GATE(19);
+	IDT_SET_GATE(20);
+	IDT_SET_GATE(21);
+	IDT_SET_GATE(22);
+	IDT_SET_GATE(23);
+	IDT_SET_GATE(24);
+	IDT_SET_GATE(25);
+	IDT_SET_GATE(26);
+	IDT_SET_GATE(27);
+	IDT_SET_GATE(28);
+	IDT_SET_GATE(29);
+	IDT_SET_GATE(30);
+	IDT_SET_GATE(31);
+#undef IDT_SET_GATE
 
 
 	lidt(&idts,(sizeof (struct IDTEntry) * 256) - 1);

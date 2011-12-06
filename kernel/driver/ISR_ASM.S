@@ -29,6 +29,11 @@ global ___isr24
 global ___isr25
 global ___isr26
 global ___isr27
+global ___isr28
+global ___isr29
+global ___isr30
+global ___isr31
+
 
 
 ___isr0:
@@ -174,10 +179,27 @@ ___isr27:
 	push byte 0
 	push byte 27
 	jmp isr_common_stub
+___isr28:
+	cli
+	push byte 0
+	push byte 28
+	jmp isr_common_stub
 
-
-
-
+___isr29:
+	cli
+	push byte 0
+	push byte 29
+	jmp isr_common_stub
+___isr30:
+	cli
+	push byte 0
+	push byte 30
+	jmp isr_common_stub
+___isr31:
+	cli
+	push byte 0
+	push byte 31
+	jmp isr_common_stub
 
 extern ___ISR_Handler
 
