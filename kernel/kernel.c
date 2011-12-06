@@ -7,6 +7,7 @@
 #include "driver/ACPI/FADT.h"
 #include "driver/GDT.h"
 #include "driver/IDT.h"
+#include "driver/IRQ.h"
 void kmain( multiboot_info_t* mbd, unsigned int magic )
 {
    if ( magic != 0x2BADB002 )
@@ -17,6 +18,7 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    }
    GDTInstall();
    IDTInstall();
+   IRQ_Init();
    Console_Init();
 
    Console_SetDefaultColor(0x1E);
@@ -35,4 +37,5 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    if (!ACPI_IsEnabled()){
    	Console_Printf("Enabling ACPI.......%d\r\n",ACPI_Enable());
    }
+   for(;;);
 }

@@ -63,6 +63,9 @@ extern void ___isr29();
 extern void ___isr30();
 extern void ___isr31();
 
+extern void ___irq0();
+extern void ___irq1();
+
 void IDTInstall(){
 	// because idts is static data, don't need to memset to zero.
 	//memset(idts,0,sizeof(struct IDTEntry)*256);
@@ -102,6 +105,8 @@ void IDTInstall(){
 	IDT_SET_GATE(30);
 	IDT_SET_GATE(31);
 #undef IDT_SET_GATE
+	idt_set_gate(32,(uint32_t ) ___irq0,0x08,0x8E);
+	idt_set_gate(33,(uint32_t) ___irq1,0x08,0x8E);	
 
 
 	lidt(&idts,(sizeof (struct IDTEntry) * 256) - 1);
