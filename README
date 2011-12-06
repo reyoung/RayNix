@@ -15,6 +15,7 @@ Complete Features:
 	4. Part of APCI
 		Complete to RSDP struct.
 TODO Features:
+	0. Complete Interrupt Handle.
 	1. Complete APCI
 		Make PC can shutdown. :)
 	2. Complete Libc
@@ -44,6 +45,7 @@ RayNix -- 一个足够简单的操作系统。目前仅仅是一个本科生的练习，我准备绝大部分的代
 	4、一部分的APCI
 		完成了RSDP结构体的封装，查找。
 将要做的工作：
+	0、完成中断的处理
 	1、完成APCI
 		让计算机可以关机重启
 	2、完成C语言标准库
