@@ -35,6 +35,7 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
 
 
    Console_Init();
+   
    IRQ_UninstallHandler(0);
    IRQ_InstallHandler(0,TimerHandler);
    Console_SetDefaultColor(0x1E);
@@ -55,7 +56,10 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    Console_Printf("System RSDP Version %d, ",RSDP_GetVersion());
    RSDP_Descriptor_V10* desc = RSDP_GetDescriptor();
    Console_Printf("OEMID %s,Rsdt Address %x,Is Valid %d.\r\n",desc->OEMID,desc->RsdtAddress,RSDP_IsValid()?1:0);
-/*	//! For PageFalut, Need to init APCI Before Page.
+   int* ptr = 4194305;
+   Console_Printf("I wanna Page Fault! %d\r\n",*ptr);
+/*
+	//! For PageFalut, Need to init APCI Before Page.
    ACPI_RSDT_Header* header = ACPI_RSDT_GetHeader();
    Console_Printf("System RSDT, IsValid %d, Signature %s, OEMID %s,\r\n",ACPI_RSDT_IsValid(),header->Signature,header->OEMID);
    ACPI_FADT* fadt = ACPI_FADT_GetInstance();

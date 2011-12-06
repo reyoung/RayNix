@@ -12,7 +12,7 @@ void MM_PAGE_Init(){
 	for(int i=0;i<1024;++i){
 		PDB[i]=0|2;
 	}
-	uint32_t address = 0x0000;
+	uint32_t address = 0;
 	uint32_t* fpt = PDB+0x1000;
 	for(int i=0;i<1024;++i){
 		fpt[i] = address|3;
@@ -20,6 +20,11 @@ void MM_PAGE_Init(){
 	}
 	PDB[0] = fpt;
 	PDB[0] |= 3;
+
+	PDB[0x300] = fpt;
+	PDB[0x300] |= 3;
+
+
 	__asm__ volatile("mov %0, %%cr3":: "b"(PDB));
 	unsigned int cr0;
 	__asm__ volatile("mov %%cr0, %0": "=b"(cr0));
