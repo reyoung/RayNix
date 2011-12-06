@@ -3,7 +3,7 @@
 
 #define OS_NAME 			"RayNix"
 #define OS_MAJOR_VERSION		"0"
-#define OS_MINOR_VERSION		"00.1"
+#define OS_MINOR_VERSION		"00.2"
 
 
 
