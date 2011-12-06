@@ -65,6 +65,22 @@ extern void ___isr31();
 
 extern void ___irq0();
 extern void ___irq1();
+extern void ___irq2();
+extern void ___irq3();
+extern void ___irq4();
+extern void ___irq5();
+extern void ___irq6();
+extern void ___irq7();
+extern void ___irq8();
+extern void ___irq9();
+extern void ___irq10();
+extern void ___irq11();
+extern void ___irq12();
+extern void ___irq13();
+extern void ___irq14();
+extern void ___irq15();
+
+
 
 void IDTInstall(){
 	// because idts is static data, don't need to memset to zero.
@@ -105,8 +121,27 @@ void IDTInstall(){
 	IDT_SET_GATE(30);
 	IDT_SET_GATE(31);
 #undef IDT_SET_GATE
-	idt_set_gate(32,(uint32_t ) ___irq0,0x08,0x8E);
-	idt_set_gate(33,(uint32_t) ___irq1,0x08,0x8E);	
+#define REG_IRQ(n)\
+	idt_set_gate(32+n,(uint32_t)___irq##n,0x08,0x8E)
+
+	REG_IRQ(0);
+	REG_IRQ(1);
+	REG_IRQ(2);
+	REG_IRQ(3);
+	REG_IRQ(4);
+	REG_IRQ(5);
+	REG_IRQ(6);
+	REG_IRQ(7);
+	REG_IRQ(8);
+	REG_IRQ(9);
+	REG_IRQ(10);
+	REG_IRQ(11);
+	REG_IRQ(12);
+	REG_IRQ(13);
+	REG_IRQ(14);
+	REG_IRQ(15);
+
+#undef REG_IRQ
 
 
 	lidt(&idts,(sizeof (struct IDTEntry) * 256) - 1);
