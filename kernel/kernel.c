@@ -35,6 +35,4 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    if (!ACPI_IsEnabled()){
    	Console_Printf("Enabling ACPI.......%d\r\n",ACPI_Enable());
    }
-//   int i =0;
-//   i/=0;
 }

@@ -25,7 +25,6 @@ loader:
     push ebx                            ; Multiboot info structure
  
     call kmain                          ; call kernel proper
- 
     cli
 .hang:
     hlt                                 ; halt machine should kernel return
