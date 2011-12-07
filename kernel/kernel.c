@@ -80,7 +80,8 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    MM_kmalloc_init();
    int* test = kmalloc(sizeof(int)*5);
    int* t2   = kmalloc(40);
-   int* t3   = kmalloc(1024);
+   MM_kmalloc_dump();
+   int* t3   = kmalloc(1024*4);
    MM_kmalloc_dump();
    kfree(test);
 

@@ -3,7 +3,7 @@
 #include "stddef.h"
 #define KHEAP_BASE_ADDRESS 0x80000000
 #define MM_KHeap_Init()\
-	MM_KHeap_Increase(4)
+	MM_KHeap_Increase(1)
 
 // All Heap size unit is 4k, same as page size;
 

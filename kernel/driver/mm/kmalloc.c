@@ -9,7 +9,25 @@ struct KMallocNode{
 	uint32_t length:31;
 };
 static void KMallocExpend(size_t sz){
+	size_t extend_pages = sz/0x1000+1;
+	size_t curEnd = MM_KHeap_CurrentHeapSize()*0x1000+KHEAP_BASE_ADDRESS;
+	struct KMallocNode* root = (struct KMallocNode*)KHEAP_BASE_ADDRESS;
+	MM_KHeap_Increase(extend_pages);
 
+	struct KMallocNode* end = root;
+	while(end->next) end = end->next;
+
+	if(end->free){
+		end->length += extend_pages * 0x1000;
+	} else {
+		struct KMallocNode* newEnd = (struct KMallocNode*)curEnd;
+		newEnd->prev = end;
+		newEnd->next = 0;
+		newEnd->free = 1;
+		newEnd->length = extend_pages*0x1000 - sizeof(struct KMallocNode);
+		end->next = newEnd;
+	}
+	
 }
 
 
