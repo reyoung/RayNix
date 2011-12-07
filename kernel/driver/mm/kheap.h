@@ -2,6 +2,9 @@
 #define KERNEL_DRIVER_MM_KHEAP_H
 #include "stddef.h"
 #define KHEAP_BASE_ADDRESS 0x80000000
+#define MM_KHeap_Init()\
+	MM_KHeap_Increase(4)
+
 // All Heap size unit is 4k, same as page size;
 
 size_t MM_KHeap_CurrentHeapSize();

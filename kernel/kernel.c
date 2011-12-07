@@ -72,8 +72,12 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    MM_PAGE_FreePage(4194305);
    Console_Printf("I wanna Page Fault, Again! %d\r\n",*ptr);
    MM_PAGE_FreePage(4194305);
-   MM_KHeap_Increase(2);
+
+   
+   MM_KHeap_Init();
    uint32_t* kheapBase = KHEAP_BASE_ADDRESS;
+   
+   
    Console_Printf("KHeap Base Address %x, Value %d\r\n",kheapBase,*kheapBase);
    ACPI_RSDT_Header* header = ACPI_RSDT_GetHeader();
    Console_Printf("System RSDT, IsValid %d, Signature %s, OEMID %s,\r\n",ACPI_RSDT_IsValid(),header->Signature,header->OEMID);
