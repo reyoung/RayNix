@@ -213,7 +213,30 @@ void MM_PAGE_Init(multiboot_info_t* mbd){
 	
 }
 
-
+void MM_PAGE_AllocPage(void* address){
+	uint32_t addr = address;
+	uint32_t PDB_Index = (addr>>22)&0x3FF;
+	uint32_t PT_Index = (addr>>12)&0x3FF;
+	uint32_t used_addr = AllocAFreePhysicalAddr();
+	uint32_t* PDB = MM_PAGE_GetPageDirectoryBaseAddr();
+	if(PDB[PDB_Index]&1){
+		uint32_t* pt = PDB[PDB_Index]&0xFFFFF000;
+		pt[PT_Index] = used_addr;
+		pt[PT_Index] |= 3;
+	} else {
+		++PageTableCount;
+		uint32_t* pt = PDB+ 0x1000 * PageTableCount;
+		for(uint32_t i =0;i<1024;++i){
+			pt[i]=0;
+			pt[i]|=2;
+		}
+		
+		pt[PT_Index] = used_addr;
+		pt[PT_Index] |= 3;
+		PDB[PDB_Index] = pt;
+		PDB[PDB_Index] |=3;
+	}
+}
 
 void MM_PAGE_FaultHandler(struct ISR_Regs* reg){
 	Console_Printf("During Page Fault Handler \r\n");
@@ -225,29 +248,21 @@ void MM_PAGE_FaultHandler(struct ISR_Regs* reg){
 	} else {
 		uint32_t addr=0;
 		__asm__ ("mov %%cr2,%0":"=a"(addr));
-		uint32_t PDB_Index = (addr>>22)&0x3FF;
-		uint32_t PT_Index = (addr>>12)&0x3FF;
-		uint32_t used_addr = AllocAFreePhysicalAddr();
-		uint32_t* PDB = MM_PAGE_GetPageDirectoryBaseAddr();
-		if(PDB[PDB_Index]&1){
-			uint32_t* pt = PDB[PDB_Index]&0xFFFFF000;
-			pt[PT_Index] = used_addr;
-			pt[PT_Index] |= 3;
-		} else {
-			++PageTableCount;
-			uint32_t* pt = PDB+ 0x1000 * PageTableCount;
-			for(uint32_t i =0;i<1024;++i){
-				pt[i]=0;
-				pt[i]|=2;
-			}
-			
-			pt[PT_Index] = used_addr;
-			pt[PT_Index] |= 3;
-			PDB[PDB_Index] = pt;
-			PDB[PDB_Index] |=3;
-			
-		}
+		MM_PAGE_AllocPage(addr);
 	}
 		
 	//__asm__ ("hlt;");
 }
+
+void MM_PAGE_FreePage(void* address){
+	uint32_t addr = address;
+	uint32_t PDB_Index = (addr>>22)&0x3FF;
+	uint32_t PT_Index = (addr>>12)&0x3FF;
+	uint32_t* PDB = (uint32_t*)MM_PAGE_GetPageDirectoryBaseAddr();
+	uint32_t* pt = (uint32_t*)(PDB[PDB_Index] & 0xFFFFF000);
+	uint32_t  physicalAddr = pt[PT_Index] & 0xFFFFF000;
+	pt[PT_Index]=0|2;
+	FreePhysicalAddr(physicalAddr);
+}
+
+

@@ -10,6 +10,10 @@ void MM_PAGE_Init(multiboot_info_t* mbd);
 
 boolean MM_PAGE_IsInited();
 
+
+void MM_PAGE_AllocPage(void* address);
+void MM_PAGE_FreePage(void* address);
+
 void MM_PAGE_FaultHandler(struct ISR_Regs* reg);
 
 #endif
