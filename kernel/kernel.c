@@ -19,27 +19,35 @@ void TimerHandler(struct ISR_Regs* regs){
 char Buffer[256];
 extern uint32_t ___KernelEnd;
 
-
 void kmain( multiboot_info_t* mbd, unsigned int magic )
 {
    if ( magic != 0x2BADB002 )
    {
-      /* Something went not according to specs. Print an error */
-      /* message and halt, but do *not* rely on the multiboot */
-      /* data structure. */
+     int FAKE = 0;
+     FAKE/=0;	// To make a exception exit the kernel.
    }
    GDTInstall();
    IDTInstall();
    IRQ_Init();
+    
+
    MM_PAGE_Init();	
 
-
    Console_Init();
+
+   Console_SetDefaultColor(0x1E);
+   Console_Clear();
+
+   for(multiboot_memory_map_t* mmap = mbd->mmap_addr;
+		mmap < mbd->mmap_addr+ mbd->mmap_length;
+      ){
+   	Console_Printf("Mem Map From %x Length %x Size %x Flags %x \r\n", (int)mmap->addr, (int)mmap->len, mmap->size, mmap->type ) ;
+	mmap = (multiboot_memory_map_t* )((uint32_t)(mmap)+mmap->size + sizeof(uint32_t));
+   }	   
    
    IRQ_UninstallHandler(0);
    IRQ_InstallHandler(0,TimerHandler);
-   Console_SetDefaultColor(0x1E);
-   Console_Clear();
+
 
 
    Console_Printf("========================%s Ver %s.%s==============",OS_NAME,OS_MAJOR_VERSION,OS_MINOR_VERSION);
