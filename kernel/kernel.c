@@ -31,19 +31,15 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    IRQ_Init();
     
 
-   MM_PAGE_Init();	
+   	
 
    Console_Init();
 
    Console_SetDefaultColor(0x1E);
    Console_Clear();
 
-   for(multiboot_memory_map_t* mmap = mbd->mmap_addr;
-		mmap < mbd->mmap_addr+ mbd->mmap_length;
-      ){
-   	Console_Printf("Mem Map From %x Length %x Size %x Flags %x \r\n", (int)mmap->addr, (int)mmap->len, mmap->size, mmap->type ) ;
-	mmap = (multiboot_memory_map_t* )((uint32_t)(mmap)+mmap->size + sizeof(uint32_t));
-   }	   
+   MM_PAGE_Init(mbd);
+	   
    
    IRQ_UninstallHandler(0);
    IRQ_InstallHandler(0,TimerHandler);
@@ -56,7 +52,14 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    Console_Printf("%d-%d-%d %d:%d:%d\r\n",(int)dt.Month,(int)dt.Day,(int)dt.Year,(int)dt.Hour,(int)dt.Min,(int)dt.Second);
 
    Console_Printf("Kernel End At %x, PDB %x\r\n",&___KernelEnd,MM_PAGE_GetPageDirectoryBaseAddr());
-
+/*
+   for(multiboot_memory_map_t* mmap = mbd->mmap_addr;
+		mmap < mbd->mmap_addr+ mbd->mmap_length;
+      ){
+   	Console_Printf("Mem Map From %x Length %x Size %x Flags %x \r\n", (int)mmap->addr, (int)mmap->len, mmap->size, mmap->type ) ;
+	mmap = (multiboot_memory_map_t* )((uint32_t)(mmap)+mmap->size + sizeof(uint32_t));
+   }
+*/
 
    if(mbd->flags&MULTIBOOT_INFO_MEMORY){
    	Console_Printf("Total Mem %dK, Uppder Mem %dk, Lower Mem %dk\r\n",mbd->mem_lower+mbd->mem_upper,mbd->mem_upper,mbd->mem_lower);
@@ -64,9 +67,9 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    Console_Printf("System RSDP Version %d, ",RSDP_GetVersion());
    RSDP_Descriptor_V10* desc = RSDP_GetDescriptor();
    Console_Printf("OEMID %s,Rsdt Address %x,Is Valid %d.\r\n",desc->OEMID,desc->RsdtAddress,RSDP_IsValid()?1:0);
-   int* ptr = 4194305;
-   Console_Printf("I wanna Page Fault! %d\r\n",*ptr);
-/*
+//   int* ptr = 4194305;
+//   Console_Printf("I wanna Page Fault! %d\r\n",*ptr);
+
 	//! For PageFalut, Need to init APCI Before Page.
    ACPI_RSDT_Header* header = ACPI_RSDT_GetHeader();
    Console_Printf("System RSDT, IsValid %d, Signature %s, OEMID %s,\r\n",ACPI_RSDT_IsValid(),header->Signature,header->OEMID);
@@ -75,6 +78,6 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    if (!ACPI_IsEnabled()){
    	Console_Printf("Enabling ACPI.......%d\r\n",ACPI_Enable());
    }
-*/
+
    for(;;);
 }

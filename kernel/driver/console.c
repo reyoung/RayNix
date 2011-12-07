@@ -6,7 +6,7 @@
 #define COLUMN_COUNT 80
 #define BUFFER_MAX 256
 
-static char * VideoRam = 0x000b8000+0xc0000000;
+static char * VideoRam = 0x000b8000;
 static uint8_t X;
 static uint8_t Y;
 static char Color;
