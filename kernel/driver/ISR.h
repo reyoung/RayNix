@@ -9,5 +9,10 @@ struct ISR_Regs{
 };
 
 
+void ISR_InstallHandler(int int_no, void(* func )(struct ISR_Regs* ));
+
+
+#define ISR_UninstallHandler( no )\
+	ISR_InstallHandler(no,0)
 
 #endif
