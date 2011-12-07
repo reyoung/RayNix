@@ -1,6 +1,10 @@
 #include "Page.h"
 #include "../console.h"
 
+
+#define PAGE_FAULT_TYPE_ISPROTECTION 0x01
+
+
 extern uint32_t ___KernelEnd;
 static int PageTableCount = 0;
 static boolean Inited = False;
@@ -213,5 +217,37 @@ void MM_PAGE_Init(multiboot_info_t* mbd){
 
 void MM_PAGE_FaultHandler(struct ISR_Regs* reg){
 	Console_Printf("During Page Fault Handler \r\n");
-	__asm__ ("hlt;");
+	
+	uint8_t ErrCode= reg->err_code;
+	if(ErrCode&PAGE_FAULT_TYPE_ISPROTECTION){
+		Console_Printf("Protection Page Fault, Hlt!\r\n");
+		__asm__("hlt;");
+	} else {
+		uint32_t addr=0;
+		__asm__ ("mov %%cr2,%0":"=a"(addr));
+		uint32_t PDB_Index = (addr>>22)&0x3FF;
+		uint32_t PT_Index = (addr>>12)&0x3FF;
+		uint32_t used_addr = AllocAFreePhysicalAddr();
+		uint32_t* PDB = MM_PAGE_GetPageDirectoryBaseAddr();
+		if(PDB[PDB_Index]&1){
+			uint32_t* pt = PDB[PDB_Index]&0xFFFFF000;
+			pt[PT_Index] = used_addr;
+			pt[PT_Index] |= 3;
+		} else {
+			++PageTableCount;
+			uint32_t* pt = PDB+ 0x1000 * PageTableCount;
+			for(uint32_t i =0;i<1024;++i){
+				pt[i]=0;
+				pt[i]|=2;
+			}
+			
+			pt[PT_Index] = used_addr;
+			pt[PT_Index] |= 3;
+			PDB[PDB_Index] = pt;
+			PDB[PDB_Index] |=3;
+			
+		}
+	}
+		
+	//__asm__ ("hlt;");
 }
