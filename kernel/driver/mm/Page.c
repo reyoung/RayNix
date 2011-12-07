@@ -218,6 +218,7 @@ void MM_PAGE_AllocPage(void* address){
 	uint32_t PDB_Index = (addr>>22)&0x3FF;
 	uint32_t PT_Index = (addr>>12)&0x3FF;
 	uint32_t used_addr = AllocAFreePhysicalAddr();
+	// TODO Handle Mem Not Enough, When Mem Not Enough, used_addr = 0;
 	uint32_t* PDB = MM_PAGE_GetPageDirectoryBaseAddr();
 	if(PDB[PDB_Index]&1){
 		uint32_t* pt = PDB[PDB_Index]&0xFFFFF000;
