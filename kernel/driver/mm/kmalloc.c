@@ -27,7 +27,6 @@ static void KMallocExpend(size_t sz){
 		newEnd->length = extend_pages*0x1000 - sizeof(struct KMallocNode);
 		end->next = newEnd;
 	}
-	
 }
 
 
@@ -95,5 +94,59 @@ void* kmalloc(size_t sz){
 	KMallocExpend(sz);
 	return kmalloc(sz);
 }
+static inline void FreeNodeLURU(struct KMallocNode* node){ //! Free Node, L used, R Used.
+	node->free = 1;
+}
+static inline void FreeNodeLURF(struct KMallocNode* node){ //! Free Node, L used, R free.
+	struct KMallocNode* r = (struct KMallocNode* )node->next;
+	struct KMallocNode* rnext = (struct KMallocNode*)((struct KMallocNode* ) node->next)->next;
+
+	node->length = node->length + sizeof(struct KMallocNode) + r->length;
+	node->free = 1;
+	node->next = r->next;
+
+	if(rnext!=0){
+		rnext->prev = node;
+	}
+
+}
+static inline void FreeNodeLFRF(struct KMallocNode* node){
+	struct KMallocNode* l = (struct KMallocNode* ) node->prev;
+	struct KMallocNode* r = (struct KMallocNode* ) node->next;
+	l->length = l->length + 2* sizeof(struct KMallocNode) + node->length + r->length;
+	l->free = 1;
+	l->next = r->next;
+	struct KMallocNode* rnext = r->next;
+
+	if(rnext!=0){
+		rnext->prev = l;
+	}
+
+}
+
+
+
 void  kfree(void* mem){
+	uint32_t addr =(uint32_t) mem;
+	addr -= sizeof(struct KMallocNode);
+	struct KMallocNode* p = (struct KMallocNode* )addr;
+	//Console_Printf("Free Node %x \r\n",p);
+	uint8_t L_Free = 1;
+	uint8_t R_Free = 1;
+	if(p->prev == 0 || ! ((struct KMallocNode*)(p->prev))->free){
+		L_Free = 0;
+	} 
+	if(p->next == 0 || ! ((struct KMallocNode*)(p->next))->free){
+		R_Free = 0;
+	}
+	if(L_Free==0&&R_Free==0){ //! Free Node, L used R used.
+		FreeNodeLURU(p);
+	} else if(L_Free==0&&R_Free==1){
+		FreeNodeLURF(p);
+	} else if(L_Free==1&&R_Free==0){ //! L Free, R Used.
+		FreeNodeLURF(p->prev);
+	} else {  //! L Free , R Free
+		FreeNodeLFRF(p); 
+	}
+
 }
