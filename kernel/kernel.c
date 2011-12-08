@@ -16,6 +16,11 @@ void TimerHandler(struct ISR_Regs* regs){
 	//Console_Printf("Handlling Timer IRQ \r\n");
 }
 
+void KeyboardHandler(uint8_t sc, uint32_t kc){
+	uint8_t ch = kc;
+	Console_Printf("Key Pressed, Scancode %d, Keycode %x, Char %c \r\n",(int)sc,kc,ch);
+}
+
 char Buffer[256];
 extern uint32_t ___KernelEnd;
 
@@ -43,8 +48,10 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    
    IRQ_UninstallHandler(0);
    IRQ_InstallHandler(0,TimerHandler);
+ 
 
-
+   IO_Keyboard_Init();
+   IO_Keyboard_AppendListener(KeyboardHandler);
 
    Console_Printf("========================%s Ver %s.%s==============",OS_NAME,OS_MAJOR_VERSION,OS_MINOR_VERSION);
    CMOS_DateTime dt;
