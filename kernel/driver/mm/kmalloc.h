@@ -10,4 +10,6 @@ void  kfree(void* mem);
 
 void  MM_kmalloc_dump();
 
+//void  MM_kmalloc_reduce();
+
 #endif

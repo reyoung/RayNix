@@ -76,22 +76,7 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    MM_KHeap_Init();
    uint32_t* kheapBase = KHEAP_BASE_ADDRESS;
    Console_Printf("KHeap Base Address %x, Value %d\r\n",kheapBase,*kheapBase);
-/* // KMalloc Test.
-   MM_kmalloc_init();
-   int* test = kmalloc(sizeof(int)*5);
-   int* t2   = kmalloc(40);
-   MM_kmalloc_dump();
-   int* t3   = kmalloc(1024*4);
-   int* t4   = kmalloc(20);
-   MM_kmalloc_dump();
-   kfree(test);
-   MM_kmalloc_dump();
- 
-   kfree(t2);
-   MM_kmalloc_dump();
-   kfree(t3);
-   MM_kmalloc_dump();
-*/
+
    ACPI_RSDT_Header* header = ACPI_RSDT_GetHeader();
    Console_Printf("System RSDT, IsValid %d, Signature %s, OEMID %s,\r\n",ACPI_RSDT_IsValid(),header->Signature,header->OEMID);
    ACPI_FADT* fadt = ACPI_FADT_GetInstance();

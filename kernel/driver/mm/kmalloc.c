@@ -2,6 +2,7 @@
 #include "stdint.h"
 #include "../console.h"
 #include "kheap.h"
+#include "string.h"
 struct KMallocNode{
 	uint32_t prev;
 	uint32_t next;
@@ -15,17 +16,17 @@ static void KMallocExpend(size_t sz){
 	MM_KHeap_Increase(extend_pages);
 
 	struct KMallocNode* end = root;
-	while(end->next) end = end->next;
+	while(end->next) end = (struct KMallocNode*)end->next;
 
 	if(end->free){
 		end->length += extend_pages * 0x1000;
 	} else {
 		struct KMallocNode* newEnd = (struct KMallocNode*)curEnd;
-		newEnd->prev = end;
+		newEnd->prev = (uint32_t)end;
 		newEnd->next = 0;
 		newEnd->free = 1;
 		newEnd->length = extend_pages*0x1000 - sizeof(struct KMallocNode);
-		end->next = newEnd;
+		end->next = (uint32_t)newEnd;
 	}
 }
 
@@ -40,7 +41,7 @@ void  MM_kmalloc_dump(){
 				);
 
 
-		p=p->next;
+		p=(struct KMallocNode*)p->next;
 	}
 	Console_Printf("Finish Kmalloc Dump \r\n");
 }
@@ -55,12 +56,12 @@ static void* KMallocHelper(struct KMallocNode* pos, size_t sz){
 		uint32_t nextHeaderLen = pos->length - size - sizeof(struct KMallocNode);
 
 		struct KMallocNode* n = (struct KMallocNode* ) (nextHeaderPos);
-		n->prev = pos;
+		n->prev = (uint32_t)pos;
 		n->next = pos->next;
 		n->free = 1;
 		n->length = nextHeaderLen;
 
-		pos->next = n;
+		pos->next = (uint32_t)n;
 		pos->length = sz;
 	}
 	pos->free = 0; // ²»freeÁË
@@ -89,7 +90,7 @@ void* kmalloc(size_t sz){
 		//	Console_Printf("P_ADDRESS %x\n",p);
 			return KMallocHelper(p,sz);
 		}
-		p=p->next;
+		p=(struct KMallocNode*)p->next;
 	}
 	KMallocExpend(sz);
 	return kmalloc(sz);
@@ -106,7 +107,7 @@ static inline void FreeNodeLURF(struct KMallocNode* node){ //! Free Node, L used
 	node->next = r->next;
 
 	if(rnext!=0){
-		rnext->prev = node;
+		rnext->prev =(uint32_t) node;
 	}
 
 }
@@ -116,15 +117,64 @@ static inline void FreeNodeLFRF(struct KMallocNode* node){
 	l->length = l->length + 2* sizeof(struct KMallocNode) + node->length + r->length;
 	l->free = 1;
 	l->next = r->next;
-	struct KMallocNode* rnext = r->next;
+	struct KMallocNode* rnext =(struct KMallocNode*) r->next;
 
 	if(rnext!=0){
-		rnext->prev = l;
+		rnext->prev = (uint32_t)l;
 	}
+}
+/*
+static struct KMallocNode* MM_move_free_before(struct KMallocNode* used){
+	struct KMallocNode* freenode = (struct KMallocNode*)used->prev;
+	struct KMallocNode* freenodeprev = (struct KMallocNode*)freenode->prev;
+	struct KMallocNode* usednodenext = (struct KMallocNode*)used->next;
 
+	freenode->free = 0;
+	uint32_t originlen = freenode->length;
+	freenode->length = used->length;
+	void* freestart = freenode + sizeof(struct KMallocNode);
+	void* usedstart = used + sizeof(struct KMallocNode);
+	memmove(freestart,usedstart,freenode->length);
+	freenode->next = ((uint32_t)freenode) + freenode->length + sizeof(struct KMallocNode);
+
+	struct KMallocNode* newFreeNode = (struct KMallocNode*)freenode->next;
+        newFreeNode->free = 1;	
+	newFreeNode->prev = freenode;
+	if(usednodenext!=0&&usednodenext->free==1){ // If right is free
+		newFreeNode->next = usednodenext->next;
+		struct KMallocNode* unn = usednodenext->next;
+		newFreeNode->length = originlen+sizeof(struct KMallocNode)*2+usednodenext->length;
+		if(unn!=0){
+			unn->prev = newFreeNode;
+		}
+	}else{
+		newFreeNode->next = usednodenext;
+		newFreeNode->length = originlen;
+		struct KMallocNode* unn = usednodenext->next;
+		if(unn!=0){
+			unn->prev = newFreeNode;
+		}
+	}
+	return newFreeNode;
 }
 
 
+void  MM_kmalloc_reduce(){
+	struct KMallocNode* root = (struct KMallocNode* ) KHEAP_BASE_ADDRESS;
+	
+	struct KMallocNode* p = root;
+
+	while(p!=0){
+		if(!p->free){
+			if(p->prev!=0 && ((struct KMallocNode*)(p->prev))->free==1){
+				p=MM_move_free_before(p);
+			}
+		}
+	
+		p = (struct KMallocNode* )p->next;
+	}
+}
+*/
 
 void  kfree(void* mem){
 	uint32_t addr =(uint32_t) mem;
@@ -144,7 +194,7 @@ void  kfree(void* mem){
 	} else if(L_Free==0&&R_Free==1){
 		FreeNodeLURF(p);
 	} else if(L_Free==1&&R_Free==0){ //! L Free, R Used.
-		FreeNodeLURF(p->prev);
+		FreeNodeLURF( (struct KMallocNode*)p->prev);
 	} else {  //! L Free , R Free
 		FreeNodeLFRF(p); 
 	}
