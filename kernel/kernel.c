@@ -11,6 +11,7 @@
 #include "driver/CMOS.h"
 #include "driver/mm/Page.h"
 #include "driver/mm/kheap.h"
+#include "driver/cpuid.h"
 
 void TimerHandler(struct ISR_Regs* regs){
 	//Console_Printf("Handlling Timer IRQ \r\n");
@@ -58,7 +59,11 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    CMOS_GetCurrentDateTime(&dt);
    Console_Printf("%d-%d-%d %d:%d:%d\r\n",(int)dt.Month,(int)dt.Day,(int)dt.Year,(int)dt.Hour,(int)dt.Min,(int)dt.Second);
 
-   Console_Printf("Kernel End At %x, PDB %x\r\n",&___KernelEnd,MM_PAGE_GetPageDirectoryBaseAddr());
+   Console_Printf("Is CPUID Supported? %d\r\n",CPUID_IsSupported());
+   if(CPUID_IsSupported()){
+   	CPUID_GetVendorString(Buffer);
+   	Console_Printf(" CPUID Vendor String %s, CPU Feature %x. \r\n",Buffer,CPUID_GetFeature());
+   }
 /*
    for(multiboot_memory_map_t* mmap = mbd->mmap_addr;
 		mmap < mbd->mmap_addr+ mbd->mmap_length;

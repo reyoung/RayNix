@@ -4,8 +4,8 @@ LD=i586-elf-ld
 LFLAGS=-T linker.ld
 AS=nasm
 AS_FLAG= -f elf
-BASIC_DIRVER_CC_FILE=$(wildcard driver/*.c) $(wildcard driver/ACPI/*.c) $(wildcard driver/mm/*.c) $(wildcard driver/input/*.c)
-BASIC_ASM_FILE=$(wildcard driver/*.S)
+BASIC_DIRVER_CC_FILE=$(wildcard driver/*.c) $(wildcard driver/ACPI/*.c) $(wildcard driver/mm/*.c) $(wildcard driver/input/*.c) $(wildcard driver/cpuid/*.c)
+BASIC_ASM_FILE=$(wildcard driver/*.S) $(wildcard driver/cpuid/*.S)
 OBJS=kernel.o loader.o $(patsubst %.c, %.o, $(BASIC_DIRVER_CC_FILE)) $(patsubst %.S, %.o, $(BASIC_ASM_FILE))
 AR=i586-elf-ar
 INCLUDE_OPTIONS=-I../rlibc/inc 
@@ -20,8 +20,8 @@ kernel:	$(OBJS)
 run:kernel
 	qemu.exe -kernel kernel.bin
 clean:
-	rm *.o *.a
-	rm driver/*.o
+	rm *.a
+	rm $(OBJS)
 %.o:%.c
 	$(CC) $(CFLAGS) -o  $@ $(INCLUDE_OPTIONS) $<
 %.o:%.S
