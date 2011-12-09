@@ -13,10 +13,6 @@
 #include "driver/mm/kheap.h"
 #include "driver/cpuid.h"
 
-void TimerHandler(struct ISR_Regs* regs){
-	//Console_Printf("Handlling Timer IRQ \r\n");
-}
-
 void KeyboardHandler(uint8_t sc, uint32_t kc){
 	uint8_t ch = kc;
 	Console_Printf("Key Pressed, Scancode %d, Keycode %x, Char %c \r\n",(int)sc,kc,ch);
@@ -37,27 +33,26 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    IRQ_Init();
     
 
-   	
-
+   
    Console_Init();
 
    Console_SetDefaultColor(0x1E);
    Console_Clear();
 
    MM_PAGE_Init(mbd);
-	   
-   
-   IRQ_UninstallHandler(0);
-   IRQ_InstallHandler(0,TimerHandler);
- 
 
+   MM_kmalloc_init();
+   Timer_Init();
    IO_Keyboard_Init();
    IO_Keyboard_AppendListener(KeyboardHandler);
+
 
    Console_Printf("========================%s Ver %s.%s==============",OS_NAME,OS_MAJOR_VERSION,OS_MINOR_VERSION);
    CMOS_DateTime dt;
    CMOS_GetCurrentDateTime(&dt);
    Console_Printf("%d-%d-%d %d:%d:%d\r\n",(int)dt.Month,(int)dt.Day,(int)dt.Year,(int)dt.Hour,(int)dt.Min,(int)dt.Second);
+
+   Timer_Sleep(1000);
 
    Console_Printf("Is CPUID Supported? %d\r\n",CPUID_IsSupported());
    if(CPUID_IsSupported()){
@@ -84,10 +79,6 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    MM_PAGE_FreePage(4194305);
    Console_Printf("I wanna Page Fault, Again! %d\r\n",*ptr);
    MM_PAGE_FreePage(4194305);
-
-   MM_KHeap_Init();
-   uint32_t* kheapBase = KHEAP_BASE_ADDRESS;
-   Console_Printf("KHeap Base Address %x, Value %d\r\n",kheapBase,*kheapBase);
 
    ACPI_RSDT_Header* header = ACPI_RSDT_GetHeader();
    Console_Printf("System RSDT, IsValid %d, Signature %s, OEMID %s,\r\n",ACPI_RSDT_IsValid(),header->Signature,header->OEMID);

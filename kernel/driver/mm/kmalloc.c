@@ -73,6 +73,10 @@ void  MM_kmalloc_init(){
 //	Console_Printf("Sizeof KMallocNode %d\r\n",sizeof(struct KMallocNode));
 	uint32_t base = KHEAP_BASE_ADDRESS;
 	uint32_t size = MM_KHeap_CurrentHeapSize()*0x1000;
+	if(size==0){
+		MM_KHeap_Increase(4);
+		size = MM_KHeap_CurrentHeapSize()*0x1000;
+	}
 	//uint32_t end  = size + KHEAP_BASE_ADDRESS; // Unused.
 	struct KMallocNode* root =  (struct KMallocNode*)(base);
 	root->prev = 0;

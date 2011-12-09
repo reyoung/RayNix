@@ -6,6 +6,8 @@
 #define OS_MINOR_VERSION		"00.2"
 
 
+#define OS_TICK_TIME		10
+#define OS_TICK_HZ		1000/OS_TICK_TIME
 
 
 #endif
