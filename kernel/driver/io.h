@@ -16,7 +16,14 @@ unsigned char inb( unsigned short port )
     return ret;
 }
 
-
+static inline 
+uint16_t inw(uint16_t port){
+	uint16_t ret;
+	__asm__ volatile("inw %1, %0":
+			"=a"(ret):
+			"Nd"(port));
+		return ret;
+}
 
 
 

@@ -5,6 +5,7 @@
 #include "driver/ACPI/RSDP.h"
 #include "driver/ACPI/RSDT.h"
 #include "driver/ACPI/FADT.h"
+#include "driver/ACPI/DSDT.h"
 #include "driver/GDT.h"
 #include "driver/IDT.h"
 #include "driver/IRQ.h"
@@ -74,19 +75,31 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    Console_Printf("System RSDP Version %d, ",RSDP_GetVersion());
    RSDP_Descriptor_V10* desc = RSDP_GetDescriptor();
    Console_Printf("OEMID %s,Rsdt Address %x,Is Valid %d.\r\n",desc->OEMID,desc->RsdtAddress,RSDP_IsValid()?1:0);
-   int* ptr = 4194305;
-   Console_Printf("I wanna Page Fault! %d\r\n",*ptr);
-   MM_PAGE_FreePage(4194305);
-   Console_Printf("I wanna Page Fault, Again! %d\r\n",*ptr);
-   MM_PAGE_FreePage(4194305);
 
    ACPI_RSDT_Header* header = ACPI_RSDT_GetHeader();
    Console_Printf("System RSDT, IsValid %d, Signature %s, OEMID %s,\r\n",ACPI_RSDT_IsValid(),header->Signature,header->OEMID);
    ACPI_FADT* fadt = ACPI_FADT_GetInstance();
-   Console_Printf("System FADT IsValid %d, Len %u, PPMP %d\r\n",ACPI_FADT_IsValid(),fadt->header.Length,(int)fadt->PreferredPowerManagementProfile);
-   if (!ACPI_IsEnabled()){
-   	Console_Printf("Enabling ACPI.......%d\r\n",ACPI_Enable());
-   }
+   Console_Printf("System FADT IsValid %d, Len %u, PPMP %d, PM1ACNT %x, PM1BCNT %x \r\n",ACPI_FADT_IsValid(),fadt->header.Length,(int)fadt->PreferredPowerManagementProfile,fadt->PM1aControlBlock,fadt->PM1bControlBlock);
 
-   for(;;);
+   Console_Printf("System DSDT IsValid %d S5 Object Address %x, SLP_TYPa %x,\r\n",ACPI_DSDT_IsValid(),(int)ACPI_DSDT_GetS5Object(),
+		   ACPI_DSDT_S5_Get_SLP_TYPa());
+
+//   Console_Clear();
+//   ACPI_DSDT_Dump();
+   
+   while (!ACPI_IsEnabled()){
+   	Console_Printf("Enabling ACPI.......%d\r\n",ACPI_Enable());
+	Timer_Sleep(1000);
+	Console_Printf("Is ACPI Enabled? %d\r\n",ACPI_IsEnabled());
+   }
+   int Timer = 5;
+   Console_Printf("All Things Done. \r\n");
+   for(;;){
+   	Console_Printf("Shutdown In %d Second\r\n",Timer--);
+	Timer_Sleep(1000);
+	if(Timer==0){
+		ACPI_Shutdown();
+		for(;;);
+	}
+   }
 }

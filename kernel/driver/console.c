@@ -110,6 +110,7 @@ void Console_ScorllPage(){
 			*where=' '| (((uint16_t)Color)<<8);
 		}
 	}
+
 }
 
 int Console_Printf(const char* fmt,...){
