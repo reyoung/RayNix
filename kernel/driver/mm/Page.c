@@ -77,9 +77,12 @@ boolean MM_PAGE_IsInited(){
 
 static void MapReservedHelper(uint32_t address,uint32_t pdbindex, uint32_t ptindex, uint32_t count){
 	uint32_t* fp = 0;
-	uint32_t* PDB = MM_PAGE_GetPageDirectoryBaseAddr();
+	uint32_t* PDB = MM_PAGE_GetPageDirectoryBaseAddr();	
+//	if(pdbindex == 0x7F && ptindex == 0x3FC){
+//		Console_Printf("Coming addr %x\r\n",address);
+//	}
 
-	if( !(PDB[pdbindex] & 1)){ //! If The Page Directory's Page Table Isn't Present.
+	if( !(PDB[pdbindex])){ //! If The Page Directory's Page Table Isn't Present.
 		++PageTableCount;
 		fp = PDB + 0x1000 * PageTableCount;
 		PDB[pdbindex]=(uint32_t)fp;
@@ -87,6 +90,9 @@ static void MapReservedHelper(uint32_t address,uint32_t pdbindex, uint32_t ptind
 	} else {
 		fp = (uint32_t*)PDB[pdbindex];
 	}
+//	if(pdbindex == 0x7F && ptindex == 0x3FC){
+//		Console_Printf("FP addr %x %x %x\r\n",fp,PDB[pdbindex],PDB);
+//
 	for(uint32_t i = 0; i< count ;++i ){
 		fp[ptindex+i] = address|3;
 		address+= 0x1000;
@@ -97,21 +103,23 @@ static void MapReservedHelper(uint32_t address,uint32_t pdbindex, uint32_t ptind
 static void MapReserved(multiboot_memory_map_t* mmap ){
 	uint32_t address = mmap->addr;
 	uint32_t len = mmap->len;
-	//Console_Printf("During Map Reserved Base %x Len %x\r\n",address,len);
+
 	
 	uint32_t PDB_Index = (address>>22)&0x000003FF;
 	uint32_t PT_Index = (address >>12)&0x000003FF;
 	uint32_t POFFSET  = (address) & 0x00000FFF;
 	uint32_t Count = len / 4096 ;
 
-
-	//Console_Printf("PDB_INDEX %x, PT_INDEX %x, POFFSET %x, Count %d \r\n",PDB_Index,PT_Index,POFFSET,Count);
+//	if(PDB_Index == 0x7F && PT_Index == 0x3FC){
+//		Console_Printf("PDB_INDEX %x, PT_INDEX %x, POFFSET %x, Count %d \r\n",PDB_Index,PT_Index,POFFSET,Count);
+//		Console_Printf("During Map Reserved Base %x Len %x\r\n",address,len);
+//	}
 	if(Count < 1024 ){
 		MapReservedHelper(address,PDB_Index,PT_Index,Count);
 	} else {
 		//uint32_t i = Count / 1024;
 		for(int i=0;i< Count / 1024 ; ++i){
-			MapReservedHelper(address+0x1000*1024*i,PDB_Index,PT_Index,1024);
+			MapReservedHelper(address+0x1000*1024*i,PDB_Index,PT_Index++,1024);
 		}
 	}
 }
@@ -175,7 +183,7 @@ void MM_PAGE_Init(multiboot_info_t* mbd){
 		if (mmap->addr < 0x100000){
 			// Do Nothing
 		} else {
-			if((mmap -> type != MULTIBOOT_MEMORY_AVAILABLE )){
+			if((mmap -> type !=1 )){
 				MapReserved(mmap);
 			} else {
 				AppendFreeMemMap(mmap);
@@ -191,6 +199,7 @@ void MM_PAGE_Init(multiboot_info_t* mbd){
 			PDB[i]|=2;
 		}
 	}
+//	Console_Printf("Debug %x %x %x\r\n",PDB[0x7F],((uint32_t*)0x136000)[0x3FC],PDB);
 /*
 	void* testAddr  = AllocAFreePhysicalAddr();
 	void* t2 = AllocAFreePhysicalAddr();
@@ -241,7 +250,6 @@ void MM_PAGE_AllocPage(void* address){
 
 void MM_PAGE_FaultHandler(struct ISR_Regs* reg){
 	Console_Printf("During Page Fault Handler \r\n");
-	
 	uint8_t ErrCode= reg->err_code;
 	if(ErrCode&PAGE_FAULT_TYPE_ISPROTECTION){
 		Console_Printf("Protection Page Fault, Hlt!\r\n");
@@ -249,6 +257,8 @@ void MM_PAGE_FaultHandler(struct ISR_Regs* reg){
 	} else {
 		uint32_t addr=0;
 		__asm__ ("mov %%cr2,%0":"=a"(addr));
+		Console_Printf("Page Fault Address %x\r\n",addr);
+		for(;;);
 		MM_PAGE_AllocPage(addr);
 	}
 		

@@ -47,7 +47,6 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    IO_Keyboard_Init();
    IO_Keyboard_AppendListener(KeyboardHandler);
 
-
    Console_Printf("========================%s Ver %s.%s==============",OS_NAME,OS_MAJOR_VERSION,OS_MINOR_VERSION);
    CMOS_DateTime dt;
    CMOS_GetCurrentDateTime(&dt);
@@ -60,6 +59,7 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    	CPUID_GetVendorString(Buffer);
    	Console_Printf(" CPUID Vendor String %s, CPU Feature %x. \r\n",Buffer,CPUID_GetFeature());
    }
+   //for(;;);
 /*
    for(multiboot_memory_map_t* mmap = mbd->mmap_addr;
 		mmap < mbd->mmap_addr+ mbd->mmap_length;
@@ -72,12 +72,15 @@ void kmain( multiboot_info_t* mbd, unsigned int magic )
    if(mbd->flags&MULTIBOOT_INFO_MEMORY){
    	Console_Printf("Total Mem %dK, Uppder Mem %dk, Lower Mem %dk\r\n",mbd->mem_lower+mbd->mem_upper,mbd->mem_upper,mbd->mem_lower);
    }
+  
    Console_Printf("System RSDP Version %d, ",RSDP_GetVersion());
    RSDP_Descriptor_V10* desc = RSDP_GetDescriptor();
    Console_Printf("OEMID %s,Rsdt Address %x,Is Valid %d.\r\n",desc->OEMID,desc->RsdtAddress,RSDP_IsValid()?1:0);
-
+   
    ACPI_RSDT_Header* header = ACPI_RSDT_GetHeader();
    Console_Printf("System RSDT, IsValid %d, Signature %s, OEMID %s,\r\n",ACPI_RSDT_IsValid(),header->Signature,header->OEMID);
+
+//   for(;;);
    ACPI_FADT* fadt = ACPI_FADT_GetInstance();
    Console_Printf("System FADT IsValid %d, Len %u, PPMP %d, PM1ACNT %x, PM1BCNT %x \r\n",ACPI_FADT_IsValid(),fadt->header.Length,(int)fadt->PreferredPowerManagementProfile,fadt->PM1aControlBlock,fadt->PM1bControlBlock);
 
